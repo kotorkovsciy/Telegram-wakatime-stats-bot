@@ -3,6 +3,7 @@ python-dotenv
 rauth
 lxml
 selenium
+webdriver-manager
 pandas
 matplotlib
 pymongo
