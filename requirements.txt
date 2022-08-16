@@ -1,2 +1,9 @@
 aiogram
 python-dotenv
+rauth
+lxml
+selenium
+pandas
+matplotlib
+pymongo
+pymongo[srv]
