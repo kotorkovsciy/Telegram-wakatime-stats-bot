@@ -3,9 +3,15 @@ from aiogram.utils import executor
 from create_bot import dp
 from scripts import browsedriver
 from handlers import client, stats
+from os.path import exists
+from os import mkdir
 
 
 async def on_startup(_):
+    if not exists("info/"):
+        mkdir("info/")
+        mkdir("info/images/")
+        mkdir("info/json/")
     await browsedriver()
     print('bot online!')
 

@@ -14,7 +14,7 @@ class Auth(StatesGroup):
 
 
 async def cmd_start(message: types.Message):
-    await message.answer(f"Hello", reply_markup=await kb_client(await db.userExsist(message.from_id)))
+    await message.answer(f"Привет я бот StatsWakaTime, и предоставляю вашу статистику с сайта WakaTime.com", reply_markup=await kb_client(await db.userExsist(message.from_id)))
 
 
 async def cmd_cancel(message: types.Message, state: FSMContext):
