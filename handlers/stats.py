@@ -8,11 +8,13 @@ from os import remove
 
 async def cmd_stats_lang(message: types.Message):
     if not await db.userExsist(message.from_user.id):
-        await message.answer(f"Вы не зарегистрированы", reply_markup=await kb_client(await db.userExsist(message.from_id)))
+        await message.answer(f"❗ Вы не авторизованны", reply_markup=await kb_client(await db.userExsist(message.from_id)))
     else:
-        await message.answer(f"Ваша статистика", reply_markup=await kb_client(await db.userExsist(message.from_id)))
+        msg = await message.answer("⌛ Идёт загрузка ⌛")
         info = await db.userInfo(message.from_user.id)
-        await message.answer_photo(await lang_stats(info["_id"], info["email"], info["password"]), reply_markup=await kb_client(await db.userExsist(message.from_id)))
+        photo = await lang_stats(info["_id"], info["email"], info["password"])
+        await msg.edit_text(f"📈 Ваша статистика")
+        await message.answer_photo(photo, reply_markup=await kb_client(await db.userExsist(message.from_id)))
         remove(f'{message.from_user.id}.png')
 
 

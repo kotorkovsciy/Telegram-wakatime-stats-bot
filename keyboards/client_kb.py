@@ -1,7 +1,7 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
 
-but_reg = KeyboardButton('Регистрация')
+but_reg = KeyboardButton('Авторизация')
 kb_reg = ReplyKeyboardMarkup(resize_keyboard=True)
 kb_reg.add(but_reg)
 
