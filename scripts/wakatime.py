@@ -38,6 +38,6 @@ async def wakatime_stats(email, password):
     print(f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Getting current user from API...')
     user = session.get('users/current').json()
     print(f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Authenticated via OAuth as {0}'.format(user['data']['email']))
-    print(f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Getting user\'s coding stats from API...')
+    print(f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Getting user\'s coding stats from API')
     stats = session.get('users/current/stats')
     return loads(stats.text)
