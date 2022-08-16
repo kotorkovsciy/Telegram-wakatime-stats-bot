@@ -1,2 +1,2 @@
-# Telegram-template-bot
-Initial Bot Telegram Template
+# Telegram-wakatime-stats-bot
+Unofficial telegram bot wakatime
