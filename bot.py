@@ -1,10 +1,12 @@
 from aiogram.utils import executor
 
 from create_bot import dp
+from scripts import browsedriver
 from handlers import client, stats
 
 
 async def on_startup(_):
+    await browsedriver()
     print('bot online!')
 
 
