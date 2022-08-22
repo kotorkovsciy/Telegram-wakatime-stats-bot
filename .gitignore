@@ -11,3 +11,4 @@ venv/
 *.json
 *.png
 *.exe
+*.log
