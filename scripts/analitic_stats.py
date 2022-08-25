@@ -18,15 +18,16 @@ class AnaliticStats:
     @staticmethod
     async def __record(filename, email, password):
         """Запись статистик"""
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             dump(await wakatime_stats(email, password), f)
 
     @classmethod
     async def statics(cls, user_id, email, password, theme):
+        """Статистика"""
         await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
 
         workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
-        remove(f'{cls.PATH_JSON}{user_id}.json')
+        remove(f"{cls.PATH_JSON}{user_id}.json")
         stat = workouts["data"][theme]
         stats, times = [], []
 
@@ -39,17 +40,18 @@ class AnaliticStats:
         ax.axis("equal")
         plt.savefig(f"{cls.PATH_IMAGES}{user_id}_{theme}_stats")
 
-        img = open(f'{cls.PATH_IMAGES}{user_id}_{theme}_stats.png', "rb")
+        img = open(f"{cls.PATH_IMAGES}{user_id}_{theme}_stats.png", "rb")
 
         return img
 
     @classmethod
     async def lang_stats(cls, user_id, email, password):
+        """Статистика по языкам"""
 
         await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
 
         workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
-        remove(f'{cls.PATH_JSON}{user_id}.json')
+        remove(f"{cls.PATH_JSON}{user_id}.json")
         yp = workouts["data"]["languages"]
         yps, times = [], []
         other = 0
@@ -70,28 +72,32 @@ class AnaliticStats:
         ax.axis("equal")
         plt.savefig(f"{cls.PATH_IMAGES}{user_id}_lang_stats")
 
-        img = open(f'{cls.PATH_IMAGES}{user_id}_lang_stats.png', "rb")
+        img = open(f"{cls.PATH_IMAGES}{user_id}_lang_stats.png", "rb")
         return img
 
     @classmethod
     async def os_stats(cls, user_id, email, password):
+        """Статистика по ОС"""
         return await cls.statics(user_id, email, password, "operating_systems")
 
     @classmethod
     async def editors_stats(cls, user_id, email, password):
+        """Статистика по редакторам"""
         return await cls.statics(user_id, email, password, "editors")
 
     @classmethod
     async def categories_stats(cls, user_id, email, password):
+        """Статистика по категориям"""
         return await cls.statics(user_id, email, password, "categories")
 
     @classmethod
     async def all_time(cls, user_id, email, password):
+        """Все время"""
 
         await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
 
         workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
-        remove(f'{cls.PATH_JSON}{user_id}.json')
+        remove(f"{cls.PATH_JSON}{user_id}.json")
         return workouts["data"]["human_readable_total_including_other_language"]
 
 
@@ -106,15 +112,16 @@ class NotifyStats:
     @staticmethod
     async def __record(filename, email, password):
         """Запись статистик"""
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             dump(await wakatime_stats(email, password), f)
 
     @classmethod
     async def statics(cls, user_id, email, password, theme):
+        """Статистика"""
         await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
 
         workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
-        remove(f'{cls.PATH_JSON}{user_id}.json')
+        remove(f"{cls.PATH_JSON}{user_id}.json")
         stat = workouts["data"][theme]
         stats, times = [], []
 
@@ -134,32 +141,42 @@ class NotifyStats:
             new_index = len(df.index)
             df.loc[new_index] = data
         else:
-            df = pd.read_csv(
-                f'{cls.PATH_CSV}{user_id}_{theme}_stats.csv', index_col=0)
+            df = pd.read_csv(f"{cls.PATH_CSV}{user_id}_{theme}_stats.csv", index_col=0)
             new_index = len(df.index)
             df.loc[new_index] = data
-        df.to_csv(f'{cls.PATH_CSV}{user_id}_{theme}_stats.csv')
+        df.to_csv(f"{cls.PATH_CSV}{user_id}_{theme}_stats.csv")
         return True
 
     @classmethod
     async def visualize(cls, user_id, theme):
-        df = pd.read_csv(f"{cls.PATH_CSV}{user_id}_{theme}_proc_stats.csv", parse_dates=[
-                         "time"], index_col=0)
+        """Визуализация"""
+        df = pd.read_csv(
+            f"{cls.PATH_CSV}{user_id}_{theme}_proc_stats.csv",
+            parse_dates=["time"],
+            index_col=0,
+        )
         print(
-            f"{dt.today().strftime('%Y-%m-%d-%H.%M.%S')}] visualize: начато визуализацию данных")
-        df.plot(x='time')
+            f"{dt.today().strftime('%Y-%m-%d-%H.%M.%S')}] visualize: начато визуализацию данных"
+        )
+        df.plot(x="time")
         plt.savefig(f"{cls.PATH_IMAGES}{user_id}_{theme}_n_stats.png")
-        img = open(f'{cls.PATH_IMAGES}{user_id}_{theme}_n_stats.png', "rb")
+        img = open(f"{cls.PATH_IMAGES}{user_id}_{theme}_n_stats.png", "rb")
         print(
-            f"{dt.today().strftime('%Y-%m-%d-%H.%M.%S')}] visualize: закончено визуализацию данных")
+            f"{dt.today().strftime('%Y-%m-%d-%H.%M.%S')}] visualize: закончено визуализацию данных"
+        )
         return img
 
     @classmethod
     async def processing_statistics(cls, user_id, theme):
-        df = pd.read_csv(f"{cls.PATH_CSV}{user_id}_{theme}_stats.csv", parse_dates=[
-                         "time"], index_col=0)
+        """Обработка статистики"""
+        df = pd.read_csv(
+            f"{cls.PATH_CSV}{user_id}_{theme}_stats.csv",
+            parse_dates=["time"],
+            index_col=0,
+        )
         print(
-            f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] analitic: открыт датафрейм {user_id}_{theme}_stats.csv')
+            f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] analitic: открыт датафрейм {user_id}_{theme}_stats.csv'
+        )
         for index, row in df.iterrows():
             data = {}
             sum = 0
@@ -179,9 +196,12 @@ class NotifyStats:
                 df.loc[new_index] = data
             else:
                 df = pd.read_csv(
-                    f"{cls.PATH_CSV}{user_id}_{theme}_proc_stats.csv", index_col=0)
+                    f"{cls.PATH_CSV}{user_id}_{theme}_proc_stats.csv", index_col=0
+                )
                 new_index = len(df.index)
                 df.loc[new_index] = data
             df.to_csv(f"{cls.PATH_CSV}{user_id}_{theme}_proc_stats.csv")
-        print(f"[{dt.today().strftime('%Y-%m-%d-%H.%M.%S')}] analitic: закрыт датафрейм {user_id}_{theme}_stats.csv")
+        print(
+            f"[{dt.today().strftime('%Y-%m-%d-%H.%M.%S')}] analitic: закрыт датафрейм {user_id}_{theme}_stats.csv"
+        )
         return True

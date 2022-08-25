@@ -20,16 +20,19 @@ async def on_startup(_):
         mkdir("info/json/")
         mkdir("info/csv/")
     basicConfig(
-        filename=f'logs/[{dt.today().strftime("%Y-%m-%d-%H")}].log', filemode='a', level=INFO)
+        filename=f'logs/[{dt.today().strftime("%Y-%m-%d-%H")}].log',
+        filemode="a",
+        level=INFO,
+    )
     await browsedriver()
-    print('bot online!')
+    print("bot online!")
 
 
 client.register_handlers_client(dp)
 stats.register_handlers_stats(dp)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     loop = new_event_loop()
     set_event_loop(loop)
     loop.create_task(scheduled(86400))

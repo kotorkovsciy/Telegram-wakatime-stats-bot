@@ -7,7 +7,7 @@ from scripts import Database
 
 load_dotenv()
 
-bot = Bot(token=getenv('TOKEN'))
+bot = Bot(token=getenv("TOKEN"))
 db = Database(getenv("CONNECTIONSTRING"))
 
 dp = Dispatcher(bot, storage=MemoryStorage())
