@@ -16,3 +16,6 @@ class Database:
 
     async def userInfo(self, user_id):
         return self.collUser.find_one({"_id": user_id})
+
+    async def AllUser(self):
+        return self.collUser.find()

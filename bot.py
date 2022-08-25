@@ -1,4 +1,5 @@
-from aiogram.utils import executor
+from aiogram.utils.executor import start_polling
+from asyncio import new_event_loop, set_event_loop
 
 from create_bot import dp
 from scripts import browsedriver
@@ -7,7 +8,8 @@ from os.path import exists
 from os import mkdir
 from logging import basicConfig, INFO
 from datetime import datetime as dt
-from create_bot import db
+from scripts.notify import scheduled
+
 
 async def on_startup(_):
     if not exists("logs/"):
@@ -16,7 +18,9 @@ async def on_startup(_):
         mkdir("info/")
         mkdir("info/images/")
         mkdir("info/json/")
-    basicConfig(filename=f'logs/[{dt.today().strftime("%Y-%m-%d-%H")}].log', filemode='a', level=INFO)
+        mkdir("info/csv/")
+    basicConfig(
+        filename=f'logs/[{dt.today().strftime("%Y-%m-%d-%H")}].log', filemode='a', level=INFO)
     await browsedriver()
     print('bot online!')
 
@@ -26,4 +30,7 @@ stats.register_handlers_stats(dp)
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+    loop = new_event_loop()
+    set_event_loop(loop)
+    loop.create_task(scheduled(86400))
+    start_polling(dp, skip_updates=True, on_startup=on_startup)
