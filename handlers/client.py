@@ -55,7 +55,7 @@ async def res_step(message: types.Message, state: FSMContext):
             reply_markup=await kb_client(await db.userExsist(message.from_id)),
         )
     else:
-        await message.edit_text("❌ Авторизация не пройдена")
+        await msg.edit_text("❌ Авторизация не пройдена")
         await message.answer(
             "❗ Имя пользователя или пароль введены неверно",
             reply_markup=await kb_client(await db.userExsist(message.from_id)),
