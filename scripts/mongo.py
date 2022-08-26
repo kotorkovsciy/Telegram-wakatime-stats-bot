@@ -5,21 +5,27 @@ class Database:
     def __init__(self, connstring):
         """Инициализация подключения к базе данных"""
         self.__connection = pymongo.MongoClient(connstring)
-        self.dbUser = self.__connection["test"]
-        self.collUser = self.dbUser["users"]
+        self.__dbUser = self.__connection["test"]
+        self.__collUser = self.__dbUser["users"]
 
     async def userAdd(self, user_id, email, password):
         """ "Добавление пользователя"""
-        self.collUser.insert_one({"_id": user_id, "email": email, "password": password})
+        self.__collUser.insert_one(
+            {"_id": user_id, "email": email, "password": password}
+        )
 
     async def userExsist(self, user_id):
         """Проверка наличия пользователя"""
-        return self.collUser.find_one({"_id": user_id})
+        return self.__collUser.find_one({"_id": user_id})
+
+    async def userDel(self, user_id):
+        """Удаление пользователя"""
+        self.__collUser.delete_one({"_id": user_id})
 
     async def userInfo(self, user_id):
         """Получение информации о пользователе"""
-        return self.collUser.find_one({"_id": user_id})
+        return self.__collUser.find_one({"_id": user_id})
 
     async def AllUser(self):
         """Получение всех пользователей"""
-        return self.collUser.find()
+        return self.__collUser.find()
