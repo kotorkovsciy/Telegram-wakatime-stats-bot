@@ -3,7 +3,6 @@ from aiogram import Dispatcher, types
 from create_bot import db
 from keyboards import kb_client
 from scripts import AnaliticStats
-from os import remove
 
 
 async def cmd_stats_lang(message: types.Message):
@@ -22,7 +21,6 @@ async def cmd_stats_lang(message: types.Message):
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
         )
-        remove(f"info/images/{message.from_user.id}_lang_stats.png")
 
 
 async def cmd_stats_os(message: types.Message):
@@ -41,7 +39,6 @@ async def cmd_stats_os(message: types.Message):
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
         )
-        remove(f"info/images/{message.from_user.id}_operating_systems_stats.png")
 
 
 async def cmd_stats_editors(message: types.Message):
@@ -60,7 +57,6 @@ async def cmd_stats_editors(message: types.Message):
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
         )
-        remove(f"info/images/{message.from_user.id}_editors_stats.png")
 
 
 async def cmd_stats_editors(message: types.Message):
@@ -79,7 +75,6 @@ async def cmd_stats_editors(message: types.Message):
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
         )
-        remove(f"info/images/{message.from_user.id}_editors_stats.png")
 
 
 async def cmd_stats_categories(message: types.Message):
@@ -98,7 +93,6 @@ async def cmd_stats_categories(message: types.Message):
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
         )
-        remove(f"info/images/{message.from_user.id}_categories_stats.png")
 
 
 async def cmd_all_time(message: types.Message):

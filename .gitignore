@@ -6,9 +6,15 @@ __pycache__/
 .env
 venv/
 
+# jupyter notebooks
+.ipynb_checkpoints/
+infographics-checkpoint.ipynb
+
 # Other
-*.csv
-*.json
+api.json
+stats.json
+csv/
+json/
 *.png
 *.exe
 *.log

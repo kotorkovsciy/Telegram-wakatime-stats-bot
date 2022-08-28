@@ -30,10 +30,22 @@ class AnaliticStats:
         remove(f"{cls.PATH_JSON}{user_id}.json")
         stat = workouts["data"][theme]
         stats, times = [], []
+        times.append(0)
+        stats.append("Other")
 
         for i in stat:
-            times.append(i["total_seconds"])
-            stats.append(i["name"])
+            if i["total_seconds"] > 8000:
+                if i["name"] != "Other":
+                    times.append(i["total_seconds"])
+                    stats.append(i["name"])
+                else:
+                    times[0] += i["total_seconds"]
+            else:
+                times[0] += i["total_seconds"]
+
+        if times[0] == 0:
+            del times[0]
+            del stats[0]
 
         fig, ax = plt.subplots()
         ax.pie(times, labels=stats, shadow=True)
@@ -42,38 +54,14 @@ class AnaliticStats:
 
         img = open(f"{cls.PATH_IMAGES}{user_id}_{theme}_stats.png", "rb")
 
+        remove(f"{cls.PATH_IMAGES}{user_id}_{theme}_stats.png")
+
         return img
 
     @classmethod
     async def lang_stats(cls, user_id, email, password):
         """Статистика по языкам"""
-
-        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
-
-        workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
-        remove(f"{cls.PATH_JSON}{user_id}.json")
-        yp = workouts["data"]["languages"]
-        yps, times = [], []
-        other = 0
-
-        for x, i in enumerate(yp):
-            if i["name"] == "Other":
-                other = x
-
-        for i in yp:
-            if i["total_seconds"] > 5000:
-                times.append(i["total_seconds"])
-                yps.append(i["name"])
-            else:
-                times[other] += i["total_seconds"]
-
-        fig, ax = plt.subplots()
-        ax.pie(times, labels=yps, shadow=True)
-        ax.axis("equal")
-        plt.savefig(f"{cls.PATH_IMAGES}{user_id}_lang_stats")
-
-        img = open(f"{cls.PATH_IMAGES}{user_id}_lang_stats.png", "rb")
-        return img
+        return await cls.statics(user_id, email, password, "languages")
 
     @classmethod
     async def os_stats(cls, user_id, email, password):
@@ -158,7 +146,9 @@ class NotifyStats:
         print(
             f"{dt.today().strftime('%Y-%m-%d-%H.%M.%S')}] visualize: начато визуализацию данных"
         )
-        df.plot(x="time")
+        df2 = pd.DataFrame(df.mean(numeric_only=True)[0:5])
+        df["time"] = df["time"].dt.strftime("%m/%d/%Y")
+        df.plot(x="time", y=df2.index, kind="bar")
         plt.savefig(f"{cls.PATH_IMAGES}{user_id}_{theme}_n_stats.png")
         img = open(f"{cls.PATH_IMAGES}{user_id}_{theme}_n_stats.png", "rb")
         print(
