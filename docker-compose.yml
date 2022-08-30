@@ -10,7 +10,7 @@ services:
    - CONNECTIONSTRING=mongodb://mongo:27017/bot
   volumes:
    - ./:/usr/src/bot/
-  command: python3 bot.py
+  command: python3 -u bot.py
 
  mongo:
   image: mongo:4.2.8
