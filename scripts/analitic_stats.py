@@ -7,13 +7,15 @@ from os.path import exists
 from datetime import datetime as dt
 
 
-class AnaliticStats:
+class Path_files:
     PATH_JSON = "info/json/"
     PATH_IMAGES = "info/images/"
     PATH_CSV = "info/csv/"
 
-    def __inti__(self):
-        pass
+
+class AnaliticStats(Path_files):
+    def __init__(self):
+        super(AnaliticStats, self).__init__()
 
     @staticmethod
     async def __record(filename, email, password):
@@ -89,13 +91,9 @@ class AnaliticStats:
         return workouts["data"]["human_readable_total_including_other_language"]
 
 
-class NotifyStats:
-    PATH_JSON = "info/json/"
-    PATH_IMAGES = "info/images/"
-    PATH_CSV = "info/csv/"
-
-    def __inti__(self):
-        pass
+class NotifyStats(Path_files):
+    def __init__(self):
+        super(NotifyStats, self).__init__()
 
     @staticmethod
     async def __record(filename, email, password):
