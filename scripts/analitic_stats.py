@@ -126,12 +126,10 @@ class NotifyStats:
 
         if not exists(f"{cls.PATH_CSV}{user_id}_{theme}_stats.csv"):
             df = pd.DataFrame()
-            new_index = len(df.index)
-            df.loc[new_index] = data
+            df = df.append(data, ignore_index=True)
         else:
             df = pd.read_csv(f"{cls.PATH_CSV}{user_id}_{theme}_stats.csv", index_col=0)
-            new_index = len(df.index)
-            df.loc[new_index] = data
+            df = df.append(data, ignore_index=True)
         df.to_csv(f"{cls.PATH_CSV}{user_id}_{theme}_stats.csv")
         return True
 
