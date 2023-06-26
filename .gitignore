@@ -18,3 +18,4 @@ json/
 *.png
 *.exe
 *.log
+.idea/
