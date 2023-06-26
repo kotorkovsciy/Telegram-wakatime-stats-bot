@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from os import remove
 from os.path import exists
 from datetime import datetime as dt
+from io import BytesIO
 
 
 class Path_files:
@@ -52,11 +53,14 @@ class AnaliticStats(Path_files):
         fig, ax = plt.subplots()
         ax.pie(times, labels=stats, shadow=True)
         ax.axis("equal")
-        plt.savefig(f"{cls.PATH_IMAGES}{user_id}_{theme}_stats")
 
-        img = open(f"{cls.PATH_IMAGES}{user_id}_{theme}_stats.png", "rb")
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
 
-        remove(f"{cls.PATH_IMAGES}{user_id}_{theme}_stats.png")
+        img = buffer.getvalue()
+
+        buffer.close()
 
         return img
 
