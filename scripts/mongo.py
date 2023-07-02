@@ -18,11 +18,9 @@ class Database:
         self.__dbUser = self.__connection["test"]
         self.__collUser = self.__dbUser["users"]
 
-    async def userAdd(self, user_id, email, password):
+    async def userAdd(self, user_id, refresh_token):
         """ "Добавление пользователя"""
-        self.__collUser.insert_one(
-            {"_id": user_id, "email": email, "password": password}
-        )
+        self.__collUser.insert_one({"_id": user_id, "refresh_token": refresh_token})
 
     async def userExsist(self, user_id):
         """Проверка наличия пользователя"""

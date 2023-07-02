@@ -9,17 +9,11 @@ async def scheduled(self):
         await sleep(self)
         users = await db.AllUser()
         for user in users:
+            await NotifyStats.statics(user["_id"], user["refresh_token"], "languages")
+            await NotifyStats.statics(user["_id"], user["refresh_token"], "editors")
+            await NotifyStats.statics(user["_id"], user["refresh_token"], "categories")
             await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "languages"
-            )
-            await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "editors"
-            )
-            await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "categories"
-            )
-            await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "operating_systems"
+                user["_id"], user["refresh_token"], "operating_systems"
             )
             await NotifyStats.processing_statistics(user["_id"], "languages")
             await NotifyStats.processing_statistics(user["_id"], "editors")
