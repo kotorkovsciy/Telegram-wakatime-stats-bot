@@ -1,61 +1,88 @@
-from hashlib import sha1
-from os import urandom
 from rauth import OAuth2Service
-from datetime import datetime as dt
-from scripts.Auth_Wakatime import sign_up
 from json import loads
-from os import getenv
+from urllib.parse import parse_qsl
+import hashlib
+import os
 
 
-async def wakatime_stats(email, password):
-    """Статистика по времени"""
-
-    service = OAuth2Service(
-        client_id=getenv("CLIENT_ID"),
-        client_secret=getenv("SECRET"),
-        name="wakatime",
-        authorize_url="https://wakatime.com/oauth/authorize",
-        access_token_url="https://wakatime.com/oauth/token",
-        base_url="https://wakatime.com/api/v1/",
-    )
-
+class WakatimeAPI:
+    session = None
+    authorize_url = "https://wakatime.com/oauth/authorize"
+    access_token_url = "https://wakatime.com/oauth/token"
+    base_url = "https://wakatime.com/api/v1/"
     redirect_uri = "https://wakatime.com/oauth/test"
-    state = sha1(urandom(40)).hexdigest()
-    params = {
-        "scope": "email,read_stats",
-        "response_type": "code",
-        "state": state,
-        "redirect_uri": redirect_uri,
-    }
-
-    url = service.get_authorize_url(**params)
-
-    code = await sign_up(url, email, password)
-
     headers = {"Accept": "application/x-www-form-urlencoded"}
-    print(
-        f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Getting an access token...'
-    )
-    session = service.get_auth_session(
-        headers=headers,
-        data={
-            "code": code,
-            "grant_type": "authorization_code",
-            "redirect_uri": redirect_uri,
-        },
-    )
 
-    print(
-        f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Getting current user from API...'
-    )
-    user = session.get("users/current").json()
-    print(
-        f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Authenticated via OAuth as {0}'.format(
-            user["data"]["email"]
+    def __init__(self, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
+
+        self.service = OAuth2Service(
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            name="wakatime",
+            authorize_url=self.authorize_url,
+            access_token_url=self.access_token_url,
+            base_url=self.base_url,
         )
-    )
-    print(
-        f'[{dt.today().strftime("%Y-%m-%d-%H.%M.%S")}] wakatime_stats: Getting user\'s coding stats from API'
-    )
-    stats = session.get("users/current/stats")
-    return loads(stats.text)
+        self.state = hashlib.sha1(os.urandom(40)).hexdigest()
+
+    def get_url_auth(self):
+        params = {
+            "scope": "email,read_stats",
+            "response_type": "code",
+            "state": self.state,
+            "redirect_uri": self.redirect_uri,
+        }
+
+        url = self.service.get_authorize_url(**params)
+
+        return url
+
+    def set_auth_session(self, code):
+        try:
+            self.session = self.service.get_auth_session(
+                headers=self.headers,
+                data={
+                    "code": code,
+                    "grant_type": "authorization_code",
+                    "redirect_uri": self.redirect_uri,
+                },
+            )
+        except KeyError:
+            return False
+
+        return True
+
+    def get_stats(self):
+        return loads(self.session.get("users/current/stats").text)
+
+    def refresh_session(self):
+        refresh_token = dict(parse_qsl(self.session.access_token_response.text))[
+            "refresh_token"
+        ]
+
+        data = {
+            "grant_type": "refresh_token",
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "refresh_token": refresh_token,
+        }
+
+        self.session = self.service.get_auth_session(data=data)
+
+    def new_refresh_session(self, refresh_token):
+        data = {
+            "grant_type": "refresh_token",
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
+            "refresh_token": refresh_token,
+        }
+
+        self.session = self.service.get_auth_session(data=data)
+
+    def get_refresh_token(self):
+        return dict(parse_qsl(self.session.access_token_response.text))["refresh_token"]
+
+    def get_access_token(self):
+        return dict(parse_qsl(self.session.access_token_response.text))["access_token"]
