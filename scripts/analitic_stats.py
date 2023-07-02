@@ -1,8 +1,8 @@
-from scripts.wakatime import wakatime_stats
+from scripts.wakatime import WakatimeAPI
 import pandas as pd
 from json import dump
 import matplotlib.pyplot as plt
-from os import remove
+from os import remove, getenv
 from os.path import exists
 from datetime import datetime as dt
 from io import BytesIO
@@ -19,15 +19,19 @@ class AnaliticStats(Path_files):
         super(AnaliticStats, self).__init__()
 
     @staticmethod
-    async def __record(filename, email, password):
+    async def __record(filename, refresh_token):
         """Запись статистик"""
         with open(filename, "w") as f:
-            dump(await wakatime_stats(email, password), f)
+            api = WakatimeAPI(
+                client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET")
+            )
+            api.new_refresh_session(refresh_token)
+            dump(api.get_stats(), f)
 
     @classmethod
-    async def statics(cls, user_id, email, password, theme):
+    async def statics(cls, user_id, refresh_token, theme):
         """Статистика"""
-        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
+        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", refresh_token)
 
         workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
         remove(f"{cls.PATH_JSON}{user_id}.json")
@@ -55,7 +59,7 @@ class AnaliticStats(Path_files):
         ax.axis("equal")
 
         buffer = BytesIO()
-        plt.savefig(buffer, format='png')
+        plt.savefig(buffer, format="png")
         buffer.seek(0)
 
         img = buffer.getvalue()
@@ -65,30 +69,30 @@ class AnaliticStats(Path_files):
         return img
 
     @classmethod
-    async def lang_stats(cls, user_id, email, password):
+    async def lang_stats(cls, user_id, refresh_token):
         """Статистика по языкам"""
-        return await cls.statics(user_id, email, password, "languages")
+        return await cls.statics(user_id, refresh_token, "languages")
 
     @classmethod
-    async def os_stats(cls, user_id, email, password):
+    async def os_stats(cls, user_id, refresh_token):
         """Статистика по ОС"""
-        return await cls.statics(user_id, email, password, "operating_systems")
+        return await cls.statics(user_id, refresh_token, "operating_systems")
 
     @classmethod
-    async def editors_stats(cls, user_id, email, password):
+    async def editors_stats(cls, user_id, refresh_token):
         """Статистика по редакторам"""
-        return await cls.statics(user_id, email, password, "editors")
+        return await cls.statics(user_id, refresh_token, "editors")
 
     @classmethod
-    async def categories_stats(cls, user_id, email, password):
+    async def categories_stats(cls, user_id, refresh_token):
         """Статистика по категориям"""
-        return await cls.statics(user_id, email, password, "categories")
+        return await cls.statics(user_id, refresh_token, "categories")
 
     @classmethod
-    async def all_time(cls, user_id, email, password):
+    async def all_time(cls, user_id, refresh_token):
         """Все время"""
 
-        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
+        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", refresh_token)
 
         workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
         remove(f"{cls.PATH_JSON}{user_id}.json")
@@ -100,15 +104,19 @@ class NotifyStats(Path_files):
         super(NotifyStats, self).__init__()
 
     @staticmethod
-    async def __record(filename, email, password):
+    async def __record(filename, refresh_token):
         """Запись статистик"""
         with open(filename, "w") as f:
-            dump(await wakatime_stats(email, password), f)
+            api = WakatimeAPI(
+                client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET")
+            )
+            api.new_refresh_session(refresh_token)
+            dump(api.get_stats(), f)
 
     @classmethod
-    async def statics(cls, user_id, email, password, theme):
+    async def statics(cls, user_id, refresh_token, theme):
         """Статистика"""
-        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", email, password)
+        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", refresh_token)
 
         workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
         remove(f"{cls.PATH_JSON}{user_id}.json")
