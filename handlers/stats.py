@@ -14,7 +14,7 @@ async def cmd_stats_lang(message: types.Message):
     else:
         msg = await message.answer("⌛ Идёт загрузка ⌛")
         info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats.lang_stats(info["_id"], info["refresh_token"])
+        photo = await AnaliticStats().lang_stats(info["refresh_token"])
         await msg.edit_text(f"📈 Ваша статистика")
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
@@ -30,7 +30,7 @@ async def cmd_stats_os(message: types.Message):
     else:
         msg = await message.answer("⌛ Идёт загрузка ⌛")
         info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats.os_stats(info["_id"], info["refresh_token"])
+        photo = await AnaliticStats().os_stats(info["refresh_token"])
         await msg.edit_text(f"📈 Ваша статистика")
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
@@ -46,7 +46,7 @@ async def cmd_stats_editors(message: types.Message):
     else:
         msg = await message.answer("⌛ Идёт загрузка ⌛")
         info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats.editors_stats(info["_id"], info["refresh_token"])
+        photo = await AnaliticStats().editors_stats(info["refresh_token"])
         await msg.edit_text(f"📈 Ваша статистика")
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
@@ -62,7 +62,7 @@ async def cmd_stats_editors(message: types.Message):
     else:
         msg = await message.answer("⌛ Идёт загрузка ⌛")
         info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats.editors_stats(info["_id"], info["refresh_token"])
+        photo = await AnaliticStats().editors_stats(info["refresh_token"])
         await msg.edit_text(f"📈 Ваша статистика")
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
@@ -78,7 +78,7 @@ async def cmd_stats_categories(message: types.Message):
     else:
         msg = await message.answer("⌛ Идёт загрузка ⌛")
         info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats.categories_stats(info["_id"], info["refresh_token"])
+        photo = await AnaliticStats().categories_stats(info["refresh_token"])
         await msg.edit_text(f"📈 Ваша статистика")
         await message.answer_photo(
             photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
@@ -94,7 +94,7 @@ async def cmd_all_time(message: types.Message):
     else:
         msg = await message.answer("⌛ Идёт загрузка ⌛")
         info = await db.userInfo(message.from_user.id)
-        time = await AnaliticStats.all_time(info["_id"], info["refresh_token"])
+        time = await AnaliticStats().all_time(info["refresh_token"])
         await msg.edit_text(f"⌛ {time}")
 
 
