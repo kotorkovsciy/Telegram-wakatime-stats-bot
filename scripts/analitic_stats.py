@@ -1,4 +1,5 @@
-from scripts.wakatime import WakatimeAPI
+from scripts.wakatime import WakatimeAPI, WakatimeStats
+from scripts.visualization import Visualization
 import pandas as pd
 from json import dump
 import matplotlib.pyplot as plt
@@ -14,89 +15,44 @@ class Path_files:
     PATH_CSV = "info/csv/"
 
 
-class AnaliticStats(Path_files):
+class AnaliticStats:
     def __init__(self):
-        super(AnaliticStats, self).__init__()
+        self.stats = WakatimeStats(
+            client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET")
+        )
 
-    @staticmethod
-    async def __record(filename, refresh_token):
-        """Запись статистик"""
-        with open(filename, "w") as f:
-            api = WakatimeAPI(
-                client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET")
-            )
-            api.new_refresh_session(refresh_token)
-            dump(api.get_stats(), f)
-
-    @classmethod
-    async def statics(cls, user_id, refresh_token, theme):
-        """Статистика"""
-        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", refresh_token)
-
-        workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
-        remove(f"{cls.PATH_JSON}{user_id}.json")
-        stat = workouts["data"][theme]
-        stats, times = [], []
-        times.append(0)
-        stats.append("Other")
-
-        for i in stat:
-            if i["total_seconds"] > 8000:
-                if i["name"] != "Other":
-                    times.append(i["total_seconds"])
-                    stats.append(i["name"])
-                else:
-                    times[0] += i["total_seconds"]
-            else:
-                times[0] += i["total_seconds"]
-
-        if times[0] == 0:
-            del times[0]
-            del stats[0]
-
-        fig, ax = plt.subplots()
-        ax.pie(times, labels=stats, shadow=True)
-        ax.axis("equal")
-
-        buffer = BytesIO()
-        plt.savefig(buffer, format="png")
-        buffer.seek(0)
-
-        img = buffer.getvalue()
-
-        buffer.close()
-
-        return img
-
-    @classmethod
-    async def lang_stats(cls, user_id, refresh_token):
+    async def lang_stats(self, refresh_token):
         """Статистика по языкам"""
-        return await cls.statics(user_id, refresh_token, "languages")
 
-    @classmethod
-    async def os_stats(cls, user_id, refresh_token):
+        data = await self.stats.get_lang_stats(refresh_token)
+
+        return Visualization.create_pie_diagram(data)
+
+    async def os_stats(self, refresh_token):
         """Статистика по ОС"""
-        return await cls.statics(user_id, refresh_token, "operating_systems")
 
-    @classmethod
-    async def editors_stats(cls, user_id, refresh_token):
+        data = await self.stats.get_os_stats(refresh_token)
+
+        return Visualization.create_pie_diagram(data)
+
+    async def editors_stats(self, refresh_token):
         """Статистика по редакторам"""
-        return await cls.statics(user_id, refresh_token, "editors")
 
-    @classmethod
-    async def categories_stats(cls, user_id, refresh_token):
+        data = await self.stats.get_editors_stats(refresh_token)
+
+        return Visualization.create_pie_diagram(data)
+
+    async def categories_stats(self, refresh_token):
         """Статистика по категориям"""
-        return await cls.statics(user_id, refresh_token, "categories")
 
-    @classmethod
-    async def all_time(cls, user_id, refresh_token):
+        data = await self.stats.get_categories_stats(refresh_token)
+
+        return Visualization.create_pie_diagram(data)
+
+    async def all_time(self, refresh_token):
         """Все время"""
 
-        await cls.__record(f"{cls.PATH_JSON}{user_id}.json", refresh_token)
-
-        workouts = pd.read_json(f"{cls.PATH_JSON}{user_id}.json")
-        remove(f"{cls.PATH_JSON}{user_id}.json")
-        return workouts["data"]["human_readable_total_including_other_language"]
+        return await self.stats.get_all_time(refresh_token)
 
 
 class NotifyStats(Path_files):
@@ -107,10 +63,10 @@ class NotifyStats(Path_files):
     async def __record(filename, refresh_token):
         """Запись статистик"""
         with open(filename, "w") as f:
-            api = WakatimeAPI(
+            api = WakatimeStats(
                 client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET")
             )
-            api.new_refresh_session(refresh_token)
+            api._new_refresh_session(refresh_token)
             dump(api.get_stats(), f)
 
     @classmethod

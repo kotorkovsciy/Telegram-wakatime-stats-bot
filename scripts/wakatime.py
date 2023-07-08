@@ -1,5 +1,4 @@
 from rauth import OAuth2Service
-from json import loads
 from urllib.parse import parse_qsl
 import hashlib
 import os
@@ -54,9 +53,6 @@ class WakatimeAPI:
 
         return True
 
-    def get_stats(self):
-        return loads(self.session.get("users/current/stats").text)
-
     def refresh_session(self):
         refresh_token = dict(parse_qsl(self.session.access_token_response.text))[
             "refresh_token"
@@ -71,7 +67,7 @@ class WakatimeAPI:
 
         self.session = self.service.get_auth_session(data=data)
 
-    def new_refresh_session(self, refresh_token):
+    def _new_refresh_session(self, refresh_token):
         data = {
             "grant_type": "refresh_token",
             "client_id": self.client_id,
@@ -86,3 +82,41 @@ class WakatimeAPI:
 
     def get_access_token(self):
         return dict(parse_qsl(self.session.access_token_response.text))["access_token"]
+
+
+class WakatimeStats(WakatimeAPI):
+    def __init__(self, client_id, client_secret):
+        super(WakatimeStats, self).__init__(client_id, client_secret)
+
+    def get_stats(self):
+        return self.session.get("users/current/stats").json()
+
+    @staticmethod
+    def new_refresh_session(refresh):
+        def wrapper(self, refresh_token):
+            self._new_refresh_session(refresh_token)
+            return refresh(self, refresh_token)
+
+        return wrapper
+
+    @new_refresh_session
+    async def get_lang_stats(self, refresh_token):
+        """Статистика по языкам"""
+
+        return self.get_stats()["data"]["languages"]
+
+    @new_refresh_session
+    async def get_all_time(self, refresh_token):
+        return self.get_stats()["data"]["human_readable_total_including_other_language"]
+
+    @new_refresh_session
+    async def get_os_stats(self, refresh_token):
+        return self.get_stats()["data"]["operating_systems"]
+
+    @new_refresh_session
+    async def get_editors_stats(self, refresh_token):
+        return self.get_stats()["data"]["editors"]
+
+    @new_refresh_session
+    async def get_categories_stats(self, refresh_token):
+        return self.get_stats()["data"]["categories"]
