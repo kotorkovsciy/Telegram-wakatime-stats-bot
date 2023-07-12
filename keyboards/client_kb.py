@@ -1,4 +1,5 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from typing import Final
 from create_bot import db
 
@@ -95,3 +96,18 @@ class ClientKeyboard:
         """
 
         return cls.__KB_AUTH
+
+    @classmethod
+    async def kb_auth_url(cls, url: str) -> InlineKeyboardMarkup:
+        """Keyboard with button auth
+
+        :return: Keyboard
+
+        :rtype: ReplyKeyboardMarkup
+        """
+
+        kb: InlineKeyboardMarkup = InlineKeyboardMarkup()
+        kb.add(InlineKeyboardButton("Получить токен", url=url))
+        kb.add(InlineKeyboardButton("Отмена", callback_data="cancel"))
+
+        return kb
