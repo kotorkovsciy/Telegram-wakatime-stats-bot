@@ -23,9 +23,7 @@ class ClientKeyboard:
     __BTN_EXIT: Final[KeyboardButton] = KeyboardButton("Выход")
 
     __BTN_CANCEL: Final[KeyboardButton] = KeyboardButton("Отмена")
-    __KB_CANCEL: Final[ReplyKeyboardMarkup] = ReplyKeyboardMarkup(
-        resize_keyboard=True
-    )
+    __KB_CANCEL: Final[ReplyKeyboardMarkup] = ReplyKeyboardMarkup(resize_keyboard=True)
     __KB_CANCEL.add(__BTN_CANCEL)
 
     def __init__(self, user_id: int):

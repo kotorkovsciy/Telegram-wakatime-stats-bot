@@ -15,19 +15,15 @@ class Convertation:
         df = pd.DataFrame([data])
 
         return df
-    
+
     @classmethod
     def list_json_to_dataframe(cls, list_json):
         df = pd.DataFrame()
         for json in list_json:
-            df = pd.concat([
-                df,
-                cls.json_to_dataframe(json)
-              ], ignore_index=True
-            )
+            df = pd.concat([df, cls.json_to_dataframe(json)], ignore_index=True)
 
         return df
-            
+
     @staticmethod
     def num_to_percent(df):
         new_df = pd.DataFrame()
@@ -37,27 +33,21 @@ class Convertation:
             sum = 0
             for i in row.items():
                 if i[0] != "date":
-                  if not math.isnan(i[1]):
-                    sum += float(i[1])
-                  else:
-                    sum += 0
+                    if not math.isnan(i[1]):
+                        sum += float(i[1])
+                    else:
+                        sum += 0
 
             for i in row.items():
                 if i[0] != "date":
-                  if not math.isnan(i[1]):
-                    data[i[0]] = float(i[1]) / sum * 100
-                  else:
-                    data[i[0]] = 0
+                    if not math.isnan(i[1]):
+                        data[i[0]] = float(i[1]) / sum * 100
+                    else:
+                        data[i[0]] = 0
                 else:
                     data[i[0]] = i[1]
 
-            new_df = pd.concat(
-                [
-                    new_df,
-                    pd.DataFrame([data])
-                ], 
-                ignore_index=True
-            )
+            new_df = pd.concat([new_df, pd.DataFrame([data])], ignore_index=True)
 
         return new_df
 
@@ -100,7 +90,7 @@ class Visualization:
     def create_bar_diagram(data):
         df = Convertation.list_json_to_dataframe(data)
         df = Convertation.num_to_percent(df)
-        df.plot(x="date", linestyle='-.', marker='s')
+        df.plot(x="date", linestyle="-.", marker="s")
 
         buffer = BytesIO()
         plt.savefig(buffer, format="png")
@@ -117,7 +107,7 @@ class Visualization:
         df = Convertation.num_to_percent(df)
 
         df2 = pd.DataFrame(df.mean(numeric_only=True)[start:end])
-        df.plot(x="date", y=df2.index, linestyle='-.', marker='s')
+        df.plot(x="date", y=df2.index, linestyle="-.", marker="s")
 
         buffer = BytesIO()
         plt.savefig(buffer, format="png")

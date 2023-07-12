@@ -17,6 +17,7 @@ async def cmd_stats_lang(message: types.Message):
         photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
     )
 
+
 @login_required
 @check_refresh_token
 async def cmd_stats_os(message: types.Message):
@@ -28,16 +29,6 @@ async def cmd_stats_os(message: types.Message):
         photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
     )
 
-@login_required
-@check_refresh_token
-async def cmd_stats_editors(message: types.Message):
-    msg = await message.answer("⌛ Идёт загрузка ⌛")
-    info = await db.userInfo(message.from_user.id)
-    photo = await AnaliticStats().editors_stats(info["refresh_token"])
-    await msg.edit_text("📈 Ваша статистика")
-    await message.answer_photo(
-        photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
-    )
 
 @login_required
 @check_refresh_token
@@ -49,6 +40,19 @@ async def cmd_stats_editors(message: types.Message):
     await message.answer_photo(
         photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
     )
+
+
+@login_required
+@check_refresh_token
+async def cmd_stats_editors(message: types.Message):
+    msg = await message.answer("⌛ Идёт загрузка ⌛")
+    info = await db.userInfo(message.from_user.id)
+    photo = await AnaliticStats().editors_stats(info["refresh_token"])
+    await msg.edit_text("📈 Ваша статистика")
+    await message.answer_photo(
+        photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
+    )
+
 
 @login_required
 @check_refresh_token
@@ -60,6 +64,7 @@ async def cmd_stats_categories(message: types.Message):
     await message.answer_photo(
         photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
     )
+
 
 @login_required
 @check_refresh_token

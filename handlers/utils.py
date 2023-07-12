@@ -17,20 +17,19 @@ def login_required(func):
 
     return wrapper
 
+
 def check_refresh_token(func):
     """Decorator for check refresh token
 
     Args:
         func (func): Function for check refresh token
-        
+
     Returns:
         func: Wrapper for check refresh token
     """
+
     async def wrapper(message: types.Message):
-        api = WakatimeAPI(
-            client_id=getenv("CLIENT_ID"),
-            client_secret=getenv("SECRET")
-        )
+        api = WakatimeAPI(client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET"))
 
         info = await db.userInfo(message.from_user.id)
 

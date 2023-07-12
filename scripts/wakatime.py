@@ -28,6 +28,7 @@ class WakatimeAPI:
         get_refresh_token: Get refresh token
         get_access_token: Get access token
     """
+
     session = None
     authorize_url = "https://wakatime.com/oauth/authorize"
     access_token_url = "https://wakatime.com/oauth/token"
@@ -75,7 +76,7 @@ class WakatimeAPI:
 
         Args:
             code (str): Code for authorization
-        
+
         Returns:
             bool: True if session is set, else False
         """
@@ -96,7 +97,7 @@ class WakatimeAPI:
 
     def refresh_session(self) -> None:
         """Refresh session for work with WakaTime API
-        
+
         https://wakatime.com/developers#authentication
         """
         refresh_token = dict(parse_qsl(self.session.access_token_response.text))[
@@ -177,7 +178,7 @@ class WakatimeStats(WakatimeAPI):
     Class based class WakatimeAPI for get statistics from WakaTime API
 
     https://wakatime.com/developers
-    
+
     Methods:
         get_stats: Get all statistics
         get_lang_stats: Get statistics by languages
@@ -186,6 +187,7 @@ class WakatimeStats(WakatimeAPI):
         get_editors_stats: Get statistics by editors
         get_categories_stats: Get statistics by categories
     """
+
     def __init__(self, client_id, client_secret) -> None:
         super(WakatimeStats, self).__init__(client_id, client_secret)
 
@@ -196,7 +198,7 @@ class WakatimeStats(WakatimeAPI):
 
         Returns:
             dict: Statistics
-        
+
         Raises:
             KeyError: If session is None
         """
@@ -212,6 +214,7 @@ class WakatimeStats(WakatimeAPI):
         Returns:
             func: Wrapper for refresh session
         """
+
         def wrapper(self, refresh_token):
             self._new_refresh_session(refresh_token)
             return refresh(self, refresh_token)

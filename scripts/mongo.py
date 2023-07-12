@@ -26,7 +26,9 @@ class Database:
 
     async def userUpdate(self, user_id, refresh_token):
         """Обновление пользователя"""
-        self.__collUser.update_one({"_id": user_id}, {"$set": {"refresh_token": refresh_token}})
+        self.__collUser.update_one(
+            {"_id": user_id}, {"$set": {"refresh_token": refresh_token}}
+        )
 
     async def userExsist(self, user_id):
         """Проверка наличия пользователя"""
@@ -59,7 +61,7 @@ class Database:
                 "user_id": user_id,
                 "date": date,
                 "stats": stats,
-                "theme": theme
+                "theme": theme,
             }
         )
 

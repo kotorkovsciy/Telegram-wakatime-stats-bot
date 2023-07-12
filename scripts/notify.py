@@ -12,33 +12,32 @@ async def scheduled(self):
         users = await db.AllUser()
         for user in users:
             stats = WakatimeStats(
-                client_id=getenv("CLIENT_ID"),
-                client_secret=getenv("SECRET")
+                client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET")
             )
 
             await db.add_stats(
                 user_id=user["_id"],
                 date=dt.today().strftime("%Y-%m-%d"),
                 stats=await stats.get_lang_stats(user["refresh_token"]),
-                theme="languages"
+                theme="languages",
             )
             await db.add_stats(
                 user_id=user["_id"],
                 date=dt.today().strftime("%Y-%m-%d"),
                 stats=await stats.get_editors_stats(user["refresh_token"]),
-                theme="editors"
+                theme="editors",
             )
             await db.add_stats(
                 user_id=user["_id"],
                 date=dt.today().strftime("%Y-%m-%d"),
                 stats=await stats.get_categories_stats(user["refresh_token"]),
-                theme="categories"
+                theme="categories",
             )
             await db.add_stats(
                 user_id=user["_id"],
                 date=dt.today().strftime("%Y-%m-%d"),
                 stats=await stats.get_os_stats(user["refresh_token"]),
-                theme="operating_systems"
+                theme="operating_systems",
             )
 
         if datetime.datetime.today().isoweekday() == 7:
