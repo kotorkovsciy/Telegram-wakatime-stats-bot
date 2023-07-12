@@ -24,6 +24,10 @@ class Database:
         """ "Добавление пользователя"""
         self.__collUser.insert_one({"_id": user_id, "refresh_token": refresh_token})
 
+    async def userUpdate(self, user_id, refresh_token):
+        """Обновление пользователя"""
+        self.__collUser.update_one({"_id": user_id}, {"$set": {"refresh_token": refresh_token}})
+
     async def userExsist(self, user_id):
         """Проверка наличия пользователя"""
         return self.__collUser.find_one({"_id": user_id})
