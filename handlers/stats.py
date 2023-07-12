@@ -3,10 +3,11 @@ from aiogram import Dispatcher, types
 from create_bot import db
 from keyboards import ClientKeyboard
 from scripts import AnaliticStats
-from handlers.utils import login_required
+from handlers.utils import login_required, check_refresh_token
 
 
 @login_required
+@check_refresh_token
 async def cmd_stats_lang(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
     info = await db.userInfo(message.from_user.id)
@@ -17,6 +18,7 @@ async def cmd_stats_lang(message: types.Message):
     )
 
 @login_required
+@check_refresh_token
 async def cmd_stats_os(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
     info = await db.userInfo(message.from_user.id)
@@ -27,6 +29,7 @@ async def cmd_stats_os(message: types.Message):
     )
 
 @login_required
+@check_refresh_token
 async def cmd_stats_editors(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
     info = await db.userInfo(message.from_user.id)
@@ -37,6 +40,7 @@ async def cmd_stats_editors(message: types.Message):
     )
 
 @login_required
+@check_refresh_token
 async def cmd_stats_editors(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
     info = await db.userInfo(message.from_user.id)
@@ -47,6 +51,7 @@ async def cmd_stats_editors(message: types.Message):
     )
 
 @login_required
+@check_refresh_token
 async def cmd_stats_categories(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
     info = await db.userInfo(message.from_user.id)
@@ -57,6 +62,7 @@ async def cmd_stats_categories(message: types.Message):
     )
 
 @login_required
+@check_refresh_token
 async def cmd_all_time(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
     info = await db.userInfo(message.from_user.id)
