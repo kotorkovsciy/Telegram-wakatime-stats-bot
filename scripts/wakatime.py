@@ -150,6 +150,27 @@ class WakatimeAPI:
         """
         return dict(parse_qsl(self.session.access_token_response.text))["access_token"]
 
+    def check_refresh_token(self, refresh_token) -> bool:
+        """Check refresh token
+
+        https://wakatime.com/developers
+
+        Args:
+            refresh_token (str): Refresh token
+
+        Returns:
+            bool: True if refresh token is valid, else False
+        """
+
+        self._new_refresh_session(refresh_token)
+
+        try:
+            self.session.get("users/current")
+        except KeyError:
+            return False
+
+        return True
+
 
 class WakatimeStats(WakatimeAPI):
     """
