@@ -1,31 +1,97 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from typing import Final
+from create_bot import db
 
 
-but_reg = KeyboardButton("Авторизация")
-kb_reg = ReplyKeyboardMarkup(resize_keyboard=True)
-kb_reg.add(but_reg)
+class ClientKeyboard:
+    """Keyboard for client"""
 
+    __BTN_AUTH: Final[KeyboardButton] = KeyboardButton("Авторизация")
+    __KB_AUTH: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True)
+    __KB_AUTH.add(__BTN_AUTH)
 
-but_all_time = KeyboardButton("Всё время")
-but_stat_lang = KeyboardButton("Статистика по языкам")
-but_stat_os = KeyboardButton("Статистика по ос")
-but_stat_editors = KeyboardButton("Статистика по редакторам")
-but_stat_categories = KeyboardButton("Статистика по категориям")
-but_exit = KeyboardButton("Выход")
-kb_stats = ReplyKeyboardMarkup(resize_keyboard=True)
-kb_stats.add(but_all_time).add(but_stat_lang).add(but_stat_os).add(
-    but_stat_editors
-).add(but_stat_categories).add(but_exit)
+    __BTN_ALL_TIME: Final[KeyboardButton] = KeyboardButton("Всё время")
+    __BTN_STAT_LANG: Final[KeyboardButton] = KeyboardButton("Статистика по языкам")
+    __BTN_STAT_OS: Final[KeyboardButton] = KeyboardButton("Статистика по ос")
+    __BTN_STAT_EDITORS: Final[KeyboardButton] = KeyboardButton(
+        "Статистика по редакторам"
+    )
+    __BTN_STAT_CATEGORIES: Final[KeyboardButton] = KeyboardButton(
+        "Статистика по категориям"
+    )
+    __BTN_EXIT: Final[KeyboardButton] = KeyboardButton("Выход")
 
+    __BTN_CANCEL: Final[KeyboardButton] = KeyboardButton("Отмена")
+    __KB_CANCEL: Final[ReplyKeyboardMarkup] = ReplyKeyboardMarkup(
+        resize_keyboard=True
+    )
+    __KB_CANCEL.add(__BTN_CANCEL)
 
-async def kb_client(Krivda):
-    if not Krivda:
-        return kb_reg
-    else:
-        return kb_stats
+    def __init__(self, user_id: int):
+        """Init
 
+        :param user_id: ID user
+        :type user_id: int
 
-but_cancel = KeyboardButton("Отмена")
+        :return: None
+        :rtype: None
+        """
 
-kb_cancel = ReplyKeyboardMarkup(resize_keyboard=True)
-kb_cancel.add(but_cancel)
+        self.__user_id = user_id
+
+    async def get_keyboard(self) -> ReplyKeyboardMarkup:
+        """Return keyboard
+
+        :return: Keyboard
+
+        :rtype: ReplyKeyboardMarkup
+        """
+
+        if await db.userExsist(self.__user_id):
+            return await self.kb_stats()
+
+        return await self.kb_auth()
+
+    @classmethod
+    async def kb_stats(cls) -> ReplyKeyboardMarkup:
+        """Return keyboard with stats
+
+        :return: Keyboard
+
+        :rtype: ReplyKeyboardMarkup
+        """
+
+        kb: ReplyKeyboardMarkup = ReplyKeyboardMarkup(resize_keyboard=True)
+
+        kb.add(
+            cls.__BTN_ALL_TIME,
+            cls.__BTN_STAT_LANG,
+            cls.__BTN_STAT_OS,
+            cls.__BTN_STAT_EDITORS,
+            cls.__BTN_STAT_CATEGORIES,
+            cls.__BTN_EXIT,
+        )
+
+        return kb
+
+    @classmethod
+    async def kb_cancel(cls) -> ReplyKeyboardMarkup:
+        """Keyboard with button cancel
+
+        :return: Keyboard
+
+        :rtype: ReplyKeyboardMarkup
+        """
+
+        return cls.__KB_CANCEL
+
+    @classmethod
+    async def kb_auth(cls) -> ReplyKeyboardMarkup:
+        """Keyboard with button auth
+
+        :return: Keyboard
+
+        :rtype: ReplyKeyboardMarkup
+        """
+
+        return cls.__KB_AUTH
