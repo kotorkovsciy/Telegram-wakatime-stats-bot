@@ -63,7 +63,7 @@ async def res_step(message: types.Message, state: FSMContext):
     user_data = await state.get_data()
     if api.set_auth_session(user_data["code"]):
         refresh_token = api.get_refresh_token()
-        await db.userAdd(user_data["user_id"], refresh_token)
+        await db.user_add(user_data["user_id"], refresh_token)
         await msg.edit_text("✅ Авторизация прошла успешно")
         await message.answer(
             "Для просмотра статистик используйте кнопки 👇",
@@ -79,13 +79,13 @@ async def res_step(message: types.Message, state: FSMContext):
 
 
 async def cmd_exit(message: types.Message):
-    if not await db.userExsist(message.from_user.id):
+    if not await db.user_exsist(message.from_user.id):
         await message.answer(
             "❗ Вы не авторизованны",
             reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard(),
         )
     else:
-        await db.userDel(message.from_user.id)
+        await db.user_del(message.from_user.id)
         await message.answer(
             "❗ Вы успешно вышли из аккаунта",
             reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard(),
