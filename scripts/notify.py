@@ -1,7 +1,9 @@
-from scripts import NotifyStats
+from scripts import WakatimeStats, Visualization
 from create_bot import db, bot
 from asyncio import sleep
 import datetime
+from datetime import datetime as dt
+from os import getenv
 
 
 async def scheduled(self):
@@ -9,23 +11,39 @@ async def scheduled(self):
         await sleep(self)
         users = await db.AllUser()
         for user in users:
-            await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "languages"
+            stats = WakatimeStats(
+                client_id=getenv("CLIENT_ID"),
+                client_secret=getenv("SECRET")
             )
-            await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "editors"
+
+            await db.add_stats(
+                user_id=user["_id"],
+                date=dt.today().strftime("%Y-%m-%d"),
+                stats=await stats.get_lang_stats(user["refresh_token"]),
+                theme="languages"
             )
-            await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "categories"
+            await db.add_stats(
+                user_id=user["_id"],
+                date=dt.today().strftime("%Y-%m-%d"),
+                stats=await stats.get_editors_stats(user["refresh_token"]),
+                theme="editors"
             )
-            await NotifyStats.statics(
-                user["_id"], user["email"], user["password"], "operating_systems"
+            await db.add_stats(
+                user_id=user["_id"],
+                date=dt.today().strftime("%Y-%m-%d"),
+                stats=await stats.get_categories_stats(user["refresh_token"]),
+                theme="categories"
             )
-            await NotifyStats.processing_statistics(user["_id"], "languages")
-            await NotifyStats.processing_statistics(user["_id"], "editors")
-            await NotifyStats.processing_statistics(user["_id"], "categories")
-            await NotifyStats.processing_statistics(user["_id"], "operating_systems")
+            await db.add_stats(
+                user_id=user["_id"],
+                date=dt.today().strftime("%Y-%m-%d"),
+                stats=await stats.get_os_stats(user["refresh_token"]),
+                theme="operating_systems"
+            )
+
         if datetime.datetime.today().isoweekday() == 7:
             for user in users:
-                photo = await NotifyStats.visualize(user["_id"], "languages")
+                photo = Visualization.create_bar_diagram_slice(
+                    await db.get_stats(user["_id"], "languages")
+                )
                 await bot.send_photo(user["_id"], photo)
