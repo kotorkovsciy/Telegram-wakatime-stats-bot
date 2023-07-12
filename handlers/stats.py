@@ -1,101 +1,67 @@
 from aiogram.dispatcher.filters import Text
 from aiogram import Dispatcher, types
 from create_bot import db
-from keyboards import kb_client
+from keyboards import ClientKeyboard
 from scripts import AnaliticStats
+from handlers.utils import login_required
 
 
+@login_required
 async def cmd_stats_lang(message: types.Message):
-    if not await db.userExsist(message.from_user.id):
-        await message.answer(
-            f"❗ Вы не авторизованны",
-            reply_markup=await kb_client(await db.userExsist(message.from_id)),
-        )
-    else:
-        msg = await message.answer("⌛ Идёт загрузка ⌛")
-        info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats().lang_stats(info["refresh_token"])
-        await msg.edit_text(f"📈 Ваша статистика")
-        await message.answer_photo(
-            photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
-        )
+    msg = await message.answer("⌛ Идёт загрузка ⌛")
+    info = await db.userInfo(message.from_user.id)
+    photo = await AnaliticStats().lang_stats(info["refresh_token"])
+    await msg.edit_text("📈 Ваша статистика")
+    await message.answer_photo(
+        photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
+    )
 
-
+@login_required
 async def cmd_stats_os(message: types.Message):
-    if not await db.userExsist(message.from_user.id):
-        await message.answer(
-            f"❗ Вы не авторизованны",
-            reply_markup=await kb_client(await db.userExsist(message.from_id)),
-        )
-    else:
-        msg = await message.answer("⌛ Идёт загрузка ⌛")
-        info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats().os_stats(info["refresh_token"])
-        await msg.edit_text(f"📈 Ваша статистика")
-        await message.answer_photo(
-            photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
-        )
+    msg = await message.answer("⌛ Идёт загрузка ⌛")
+    info = await db.userInfo(message.from_user.id)
+    photo = await AnaliticStats().os_stats(info["refresh_token"])
+    await msg.edit_text("📈 Ваша статистика")
+    await message.answer_photo(
+        photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
+    )
 
-
+@login_required
 async def cmd_stats_editors(message: types.Message):
-    if not await db.userExsist(message.from_user.id):
-        await message.answer(
-            f"❗ Вы не авторизованны",
-            reply_markup=await kb_client(await db.userExsist(message.from_id)),
-        )
-    else:
-        msg = await message.answer("⌛ Идёт загрузка ⌛")
-        info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats().editors_stats(info["refresh_token"])
-        await msg.edit_text(f"📈 Ваша статистика")
-        await message.answer_photo(
-            photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
-        )
+    msg = await message.answer("⌛ Идёт загрузка ⌛")
+    info = await db.userInfo(message.from_user.id)
+    photo = await AnaliticStats().editors_stats(info["refresh_token"])
+    await msg.edit_text("📈 Ваша статистика")
+    await message.answer_photo(
+        photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
+    )
 
-
+@login_required
 async def cmd_stats_editors(message: types.Message):
-    if not await db.userExsist(message.from_user.id):
-        await message.answer(
-            f"❗ Вы не авторизованны",
-            reply_markup=await kb_client(await db.userExsist(message.from_id)),
-        )
-    else:
-        msg = await message.answer("⌛ Идёт загрузка ⌛")
-        info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats().editors_stats(info["refresh_token"])
-        await msg.edit_text(f"📈 Ваша статистика")
-        await message.answer_photo(
-            photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
-        )
+    msg = await message.answer("⌛ Идёт загрузка ⌛")
+    info = await db.userInfo(message.from_user.id)
+    photo = await AnaliticStats().editors_stats(info["refresh_token"])
+    await msg.edit_text("📈 Ваша статистика")
+    await message.answer_photo(
+        photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
+    )
 
-
+@login_required
 async def cmd_stats_categories(message: types.Message):
-    if not await db.userExsist(message.from_user.id):
-        await message.answer(
-            f"❗ Вы не авторизованны",
-            reply_markup=await kb_client(await db.userExsist(message.from_id)),
-        )
-    else:
-        msg = await message.answer("⌛ Идёт загрузка ⌛")
-        info = await db.userInfo(message.from_user.id)
-        photo = await AnaliticStats().categories_stats(info["refresh_token"])
-        await msg.edit_text(f"📈 Ваша статистика")
-        await message.answer_photo(
-            photo, reply_markup=await kb_client(await db.userExsist(message.from_id))
-        )
+    msg = await message.answer("⌛ Идёт загрузка ⌛")
+    info = await db.userInfo(message.from_user.id)
+    photo = await AnaliticStats().categories_stats(info["refresh_token"])
+    await msg.edit_text("📈 Ваша статистика")
+    await message.answer_photo(
+        photo, reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard()
+    )
 
-
+@login_required
 async def cmd_all_time(message: types.Message):
-    if not await db.userExsist(message.from_user.id):
-        await message.answer(
-            f"❗ Вы не авторизованны",
-            reply_markup=await kb_client(await db.userExsist(message.from_id)),
-        )
-    else:
-        msg = await message.answer("⌛ Идёт загрузка ⌛")
-        info = await db.userInfo(message.from_user.id)
-        time = await AnaliticStats().all_time(info["refresh_token"])
-        await msg.edit_text(f"⌛ {time}")
+    msg = await message.answer("⌛ Идёт загрузка ⌛")
+    info = await db.userInfo(message.from_user.id)
+    time = await AnaliticStats().all_time(info["refresh_token"])
+    await msg.edit_text(f"⌛ {time}")
 
 
 def register_handlers_stats(dp: Dispatcher):
