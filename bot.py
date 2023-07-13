@@ -13,11 +13,6 @@ from scripts.notify import scheduled
 async def on_startup(_):
     if not exists("logs/"):
         mkdir("logs/")
-    if not exists("info/"):
-        mkdir("info/")
-        mkdir("info/images/")
-        mkdir("info/json/")
-        mkdir("info/csv/")
     basicConfig(
         filename=f'logs/[{dt.today().strftime("%Y-%m-%d-%H")}].log',
         filemode="a",

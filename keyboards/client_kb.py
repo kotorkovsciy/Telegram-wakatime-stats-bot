@@ -46,7 +46,7 @@ class ClientKeyboard:
         :rtype: ReplyKeyboardMarkup
         """
 
-        if await db.userExsist(self.__user_id):
+        if await db.user_exsist(self.__user_id):
             return await self.kb_stats()
 
         return await self.kb_auth()

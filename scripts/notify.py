@@ -9,7 +9,7 @@ from os import getenv
 async def scheduled(self):
     while True:
         await sleep(self)
-        users = await db.AllUser()
+        users = await db.all_user()
         for user in users:
             stats = WakatimeStats(
                 client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET")

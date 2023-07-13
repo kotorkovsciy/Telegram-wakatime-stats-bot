@@ -1,0 +1,24 @@
+{
+  "operating_systems": [
+    {
+      "decimal": "208.85",
+      "digital": "208:51",
+      "hours": 208,
+      "minutes": 51,
+      "name": "Windows",
+      "percent": 86.21,
+      "text": "208 hrs 51 mins",
+      "total_seconds": 751876.292383
+    },
+    {
+      "decimal": "33.42",
+      "digital": "33:25",
+      "hours": 33,
+      "minutes": 25,
+      "name": "Linux",
+      "percent": 13.79,
+      "text": "33 hrs 25 mins",
+      "total_seconds": 120311.661513
+    }
+  ]
+}

@@ -10,7 +10,7 @@ from handlers.utils import login_required, check_refresh_token
 @check_refresh_token
 async def cmd_stats_lang(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
-    info = await db.userInfo(message.from_user.id)
+    info = await db.user_info(message.from_user.id)
     photo = await AnaliticStats().lang_stats(info["refresh_token"])
     await msg.edit_text("📈 Ваша статистика")
     await message.answer_photo(
@@ -22,7 +22,7 @@ async def cmd_stats_lang(message: types.Message):
 @check_refresh_token
 async def cmd_stats_os(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
-    info = await db.userInfo(message.from_user.id)
+    info = await db.user_info(message.from_user.id)
     photo = await AnaliticStats().os_stats(info["refresh_token"])
     await msg.edit_text("📈 Ваша статистика")
     await message.answer_photo(
@@ -34,7 +34,7 @@ async def cmd_stats_os(message: types.Message):
 @check_refresh_token
 async def cmd_stats_editors(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
-    info = await db.userInfo(message.from_user.id)
+    info = await db.user_info(message.from_user.id)
     photo = await AnaliticStats().editors_stats(info["refresh_token"])
     await msg.edit_text("📈 Ваша статистика")
     await message.answer_photo(
@@ -46,7 +46,7 @@ async def cmd_stats_editors(message: types.Message):
 @check_refresh_token
 async def cmd_stats_editors(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
-    info = await db.userInfo(message.from_user.id)
+    info = await db.user_info(message.from_user.id)
     photo = await AnaliticStats().editors_stats(info["refresh_token"])
     await msg.edit_text("📈 Ваша статистика")
     await message.answer_photo(
@@ -58,7 +58,7 @@ async def cmd_stats_editors(message: types.Message):
 @check_refresh_token
 async def cmd_stats_categories(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
-    info = await db.userInfo(message.from_user.id)
+    info = await db.user_info(message.from_user.id)
     photo = await AnaliticStats().categories_stats(info["refresh_token"])
     await msg.edit_text("📈 Ваша статистика")
     await message.answer_photo(
@@ -70,7 +70,7 @@ async def cmd_stats_categories(message: types.Message):
 @check_refresh_token
 async def cmd_all_time(message: types.Message):
     msg = await message.answer("⌛ Идёт загрузка ⌛")
-    info = await db.userInfo(message.from_user.id)
+    info = await db.user_info(message.from_user.id)
     time = await AnaliticStats().all_time(info["refresh_token"])
     await msg.edit_text(f"⌛ {time}")
 

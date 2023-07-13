@@ -6,7 +6,15 @@ import math
 
 class Convertation:
     @staticmethod
-    def json_to_dataframe(json):
+    def json_to_dataframe(json: dict) -> pd.DataFrame:
+        """Convert json to dataframe
+
+        Args:
+            json (dict): Json
+
+        Returns:
+            pd.DataFrame: Dataframe
+        """
         data = {"date": json["date"]}
 
         for i in json["stats"]:
@@ -17,7 +25,15 @@ class Convertation:
         return df
 
     @classmethod
-    def list_json_to_dataframe(cls, list_json):
+    def list_json_to_dataframe(cls, list_json: list[dict]) -> pd.DataFrame:
+        """Convert list json to dataframe
+
+        Args:
+            list_json (list[dict]): List json
+
+        Returns:
+            pd.DataFrame: Dataframe
+        """
         df = pd.DataFrame()
         for json in list_json:
             df = pd.concat([df, cls.json_to_dataframe(json)], ignore_index=True)
@@ -25,7 +41,15 @@ class Convertation:
         return df
 
     @staticmethod
-    def num_to_percent(df):
+    def num_to_percent(df: pd.DataFrame) -> pd.DataFrame:
+        """Convert numbers to percent
+
+        Args:
+            df (pd.DataFrame): Dataframe
+
+        Returns:
+            pd.DataFrame: Dataframe
+        """
         new_df = pd.DataFrame()
 
         for index, row in df.iterrows():
@@ -54,7 +78,15 @@ class Convertation:
 
 class Visualization:
     @staticmethod
-    def create_pie_diagram(data):
+    def create_pie_diagram(data: list[dict]) -> bytes:
+        """Create pie diagram
+
+        Args:
+            data (list[dict]): Data
+
+        Returns:
+            bytes: Image
+        """
         stats, times = [], []
         times.append(0)
         stats.append("Other")
@@ -87,7 +119,15 @@ class Visualization:
 
         return img
 
-    def create_bar_diagram(data):
+    def create_bar_diagram(data: list[dict]) -> bytes:
+        """Create bar diagram
+
+        Args:
+            data (list[dict]): Data
+
+        Returns:
+            bytes: Image
+        """
         df = Convertation.list_json_to_dataframe(data)
         df = Convertation.num_to_percent(df)
         df.plot(x="date", linestyle="-.", marker="s")
@@ -102,7 +142,19 @@ class Visualization:
 
         return img
 
-    def create_bar_diagram_slice(data, start=0, end=5):
+    def create_bar_diagram_slice(
+        data: list[dict], start: int = 0, end: int = 5
+    ) -> bytes:
+        """Create bar diagram slice
+
+        Args:
+            data (list[dict]): Data
+            start (int, optional): Start. Defaults to 0.
+            end (int, optional): End. Defaults to 5.
+
+        Returns:
+            bytes: Image
+        """
         df = Convertation.list_json_to_dataframe(data)
         df = Convertation.num_to_percent(df)
 

@@ -7,7 +7,7 @@ from os import getenv
 
 def login_required(func):
     async def wrapper(message: types.Message):
-        if not await db.userExsist(message.from_user.id):
+        if not await db.user_exsist(message.from_user.id):
             await message.answer(
                 "❗ Вы не авторизованны",
                 reply_markup=await ClientKeyboard(message.from_user.id).get_keyboard(),
@@ -31,14 +31,14 @@ def check_refresh_token(func):
     async def wrapper(message: types.Message):
         api = WakatimeAPI(client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET"))
 
-        info = await db.userInfo(message.from_user.id)
+        info = await db.user_info(message.from_user.id)
 
         check = api.check_refresh_token(info["refresh_token"])
 
         if check:
             await func(message)
         else:
-            db.userUpdate(message.from_user.id, api.get_refresh_token())
+            db.user_update(message.from_user.id, api.get_refresh_token())
             await func(message)
 
     return wrapper

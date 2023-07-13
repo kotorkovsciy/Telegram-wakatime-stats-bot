@@ -13,49 +13,92 @@ class Database:
     def __del__(self):
         Database.__instance = None
 
-    def __init__(self, connstring):
-        """Инициализация подключения к базе данных"""
+    def __init__(self, connstring: str) -> None:
+        """Init database
+
+        Args:
+            connstring (str): Connection string
+        """
         self.__connection = pymongo.MongoClient(connstring)
-        self.__dbUser = self.__connection["test"]
-        self.__collUser = self.__dbUser["users"]
-        self.__collStats = self.__dbUser["stats"]
+        self.__db_user = self.__connection["test"]
+        self.__coll_user = self.__db_user["users"]
+        self.__coll_stats = self.__db_user["stats"]
 
-    async def userAdd(self, user_id, refresh_token):
-        """ "Добавление пользователя"""
-        self.__collUser.insert_one({"_id": user_id, "refresh_token": refresh_token})
+    async def user_add(self, user_id: int, refresh_token: str) -> None:
+        """Create user
 
-    async def userUpdate(self, user_id, refresh_token):
-        """Обновление пользователя"""
-        self.__collUser.update_one(
+        Args:
+            user_id (int): User id
+            refresh_token (str): Refresh token
+        """
+        self.__coll_user.insert_one({"_id": user_id, "refresh_token": refresh_token})
+
+    async def user_update(self, user_id: int, refresh_token: str) -> None:
+        """Update user
+
+        Args:
+            user_id (int): User id
+            refresh_token (str): Refresh token
+        """
+        self.__coll_user.update_one(
             {"_id": user_id}, {"$set": {"refresh_token": refresh_token}}
         )
 
-    async def userExsist(self, user_id):
-        """Проверка наличия пользователя"""
-        return self.__collUser.find_one({"_id": user_id})
+    async def user_exsist(self, user_id: int) -> bool:
+        """Check user
 
-    async def userDel(self, user_id):
-        """Удаление пользователя"""
-        self.__collUser.delete_one({"_id": user_id})
+        Args:
+            user_id (int): User id
 
-    async def userInfo(self, user_id):
-        """Получение информации о пользователе"""
-        return self.__collUser.find_one({"_id": user_id})
+        Returns:
+            bool: User exsist
+        """
+        return self.__coll_user.find_one({"_id": user_id})
 
-    async def AllUser(self):
-        """Получение всех пользователей"""
-        return self.__collUser.find()
+    async def user_del(self, user_id: int) -> None:
+        """Delete user
 
-    async def add_stats(self, user_id, date, stats, theme):
-        """Добавление статистики"""
-        _id = self.__collStats.find().sort("_id", DESCENDING).limit(1)
+        Args:
+            user_id (int): User id
+        """
+        self.__coll_user.delete_one({"_id": user_id})
 
-        if self.__collStats.count_documents({}) == 0:
+    async def user_info(self, user_id: int) -> dict:
+        """Get user info
+
+        Args:
+            user_id (int): User id
+
+        Returns:
+            dict: User info
+        """
+        return self.__coll_user.find_one({"_id": user_id})
+
+    async def all_user(self) -> list[dict]:
+        """Get all users
+
+        Returns:
+            list[dict]: All users
+        """
+        return self.__coll_user.find()
+
+    async def add_stats(self, user_id: int, date: str, stats: dict, theme: str) -> None:
+        """Write statistics
+
+        Args:
+            user_id (int): User id
+            date (str): Date
+            stats (dict): Statistics
+            theme (str): Theme
+        """
+        _id = self.__coll_stats.find().sort("_id", DESCENDING).limit(1)
+
+        if self.__coll_stats.count_documents({}) == 0:
             _id = 0
         else:
             _id = _id[0]["_id"] + 1
 
-        self.__collStats.insert_one(
+        self.__coll_stats.insert_one(
             {
                 "_id": _id,
                 "user_id": user_id,
@@ -65,6 +108,14 @@ class Database:
             }
         )
 
-    async def get_stats(self, user_id, theme):
-        """Получение статистики"""
-        return self.__collStats.find({"user_id": user_id, "theme": theme})
+    async def get_stats(self, user_id: int, theme: str) -> list[dict]:
+        """Get statistics
+
+        Args:
+            user_id (int): User id
+            theme (str): Theme
+
+        Returns:
+            list[dict]: Statistics
+        """
+        return self.__coll_stats.find({"user_id": user_id, "theme": theme})
