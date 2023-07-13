@@ -77,8 +77,8 @@ class Convertation:
 
 
 class Visualization:
-    @staticmethod
-    def create_pie_diagram(data: list[dict]) -> bytes:
+    @classmethod
+    def create_pie_diagram(cls, data: list[dict]) -> bytes:
         """Create pie diagram
 
         Args:
@@ -87,30 +87,32 @@ class Visualization:
         Returns:
             bytes: Image
         """
-        stats, times = [], []
-        times.append(0)
-        stats.append("Other")
+
+        if len(data) > 15:
+            data = cls.filter_data_for_pie_diagram(data, 1)
+
+        data_names, data_val = [], []
+
 
         for i in data:
-            if i["total_seconds"] > 8000:
-                if i["name"] != "Other":
-                    times.append(i["total_seconds"])
-                    stats.append(i["name"])
-                else:
-                    times[0] += i["total_seconds"]
-            else:
-                times[0] += i["total_seconds"]
+            data_val.append(i["total_seconds"])
+            data_names.append(i["name"])
 
-        if times[0] == 0:
-            del times[0]
-            del stats[0]
+        total = sum(data_val)
+        labels = [f"{n} ({v/total:.1%})" for n,v in zip(data_names, data_val)]
 
-        fig, ax = plt.subplots()
-        ax.pie(times, labels=stats, shadow=True)
-        ax.axis("equal")
+        dpi = 80
+        fig = plt.figure(dpi = dpi, figsize = (1000 / dpi, 600 / dpi) )
+
+        plt.pie(
+            data_val, radius=1.1,
+            explode=[0.15] + [0 for _ in range(len(data_names) - 1)] )
+        plt.legend(
+            bbox_to_anchor = (-0.16, 0.45, 0.25, 0.25),
+            loc = 'best', labels = labels )
 
         buffer = BytesIO()
-        plt.savefig(buffer, format="png")
+        fig.savefig(buffer, format="png")
         buffer.seek(0)
 
         img = buffer.getvalue()
@@ -118,6 +120,23 @@ class Visualization:
         buffer.close()
 
         return img
+
+    @staticmethod
+    def filter_data_for_pie_diagram(data: list[dict], percent: int) -> list[dict]:
+        """Filter data for pie diagram
+
+        Args:
+            data (list[dict]): Data
+            percent (int): Percent
+
+        Returns:
+            list[dict]: Data
+        """
+
+        total = sum([i["total_seconds"] for i in data])
+        data = [i for i in data if i["total_seconds"] / total * 100 > percent]
+
+        return data
 
     def create_bar_diagram(data: list[dict]) -> bytes:
         """Create bar diagram
