@@ -1,18 +1,6 @@
-from scripts.wakatime import WakatimeAPI, WakatimeStats
+from scripts.wakatime import WakatimeStats
 from scripts.visualization import Visualization
-import pandas as pd
-from json import dump
-import matplotlib.pyplot as plt
-from os import remove, getenv
-from os.path import exists
-from datetime import datetime as dt
-from io import BytesIO
-
-
-class Path_files:
-    PATH_JSON = "info/json/"
-    PATH_IMAGES = "info/images/"
-    PATH_CSV = "info/csv/"
+from os import getenv
 
 
 class AnaliticStats:
