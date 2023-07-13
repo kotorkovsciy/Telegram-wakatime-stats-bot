@@ -7,7 +7,7 @@ A bot for viewing statistics on the languages used, OS, and so on
 
 ## Running image
 ```console
-docker run --env TOKEN="TOKEN" --env CONNECTIONSTRING="CONNECTIONSTRING" --env CLIENT_ID="CLIENT_ID" --env SECRET="SECRET" telegram-wakatime-stats-bot
+docker run --env TOKEN="TOKEN" --env CONNECTIONSTRING="CONNECTIONSTRING" --env CLIENT_ID="CLIENT_ID" --env SECRET="SECRET" kotorkovsciy/telegram-wakatime-stats-bot
 ```
 
 ## Statistics of languages used
