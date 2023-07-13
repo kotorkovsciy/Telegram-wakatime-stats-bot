@@ -1,0 +1,44 @@
+{
+  "categories": [
+    {
+      "decimal": "237.55",
+      "digital": "237:33",
+      "hours": 237,
+      "minutes": 33,
+      "name": "Coding",
+      "percent": 98.06,
+      "text": "237 hrs 33 mins",
+      "total_seconds": 855231.991874
+    },
+    {
+      "decimal": "4.32",
+      "digital": "4:19",
+      "hours": 4,
+      "minutes": 19,
+      "name": "Browsing",
+      "percent": 1.79,
+      "text": "4 hrs 19 mins",
+      "total_seconds": 15597.171343
+    },
+    {
+      "decimal": "0.35",
+      "digital": "0:21",
+      "hours": 0,
+      "minutes": 21,
+      "name": "Building",
+      "percent": 0.15,
+      "text": "21 mins",
+      "total_seconds": 1265.149893
+    },
+    {
+      "decimal": "0.02",
+      "digital": "0:01",
+      "hours": 0,
+      "minutes": 1,
+      "name": "Debugging",
+      "percent": 0.01,
+      "text": "1 min",
+      "total_seconds": 93.640786
+    }
+  ]
+}
