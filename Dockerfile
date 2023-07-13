@@ -7,3 +7,5 @@ WORKDIR /usr/src/bot/
 COPY . /usr/src/bot/
 
 RUN pip install -r requirements.txt
+
+CMD ["python", "bot.py"]
