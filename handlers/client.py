@@ -10,6 +10,7 @@ from os import getenv
 
 class Auth(StatesGroup):
     code = State()
+    check = State()
 
 
 async def cmd_start(message: types.Message):
@@ -57,6 +58,7 @@ async def auth_step(message: types.Message, state: FSMContext):
 
 
 async def res_step(message: types.Message, state: FSMContext):
+    await Auth.check.set()
     msg = await message.answer("⌛ Производится авторизация ⌛")
     await state.update_data(code=message.text)
     api = WakatimeAPI(client_id=getenv("CLIENT_ID"), client_secret=getenv("SECRET"))
