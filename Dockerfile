@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.10.1
 
 RUN mkdir -p /usr/src/bot/
 
