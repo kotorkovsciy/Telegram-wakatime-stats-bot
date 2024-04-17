@@ -63,7 +63,8 @@ async def res_step(message: types.Message, state: FSMContext):
     user_data = await state.get_data()
     if api.set_auth_session(user_data["code"]):
         refresh_token = api.get_refresh_token()
-        await db.user_add(user_data["user_id"], refresh_token)
+        access_token = api.get_access_token()
+        await db.user_add(user_data["user_id"], refresh_token, access_token)
         await msg.edit_text("✅ Авторизация прошла успешно")
         await message.answer(
             "Для просмотра статистик используйте кнопки 👇",

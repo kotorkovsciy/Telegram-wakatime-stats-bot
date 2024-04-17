@@ -2,7 +2,7 @@ from rauth import OAuth2Service
 from urllib.parse import parse_qsl
 import hashlib
 import os
-
+from requests import get
 
 class WakatimeAPI:
     """
@@ -95,6 +95,15 @@ class WakatimeAPI:
 
         return True
 
+    def set_access_token(self, access_token: str) -> None:
+        """Set access token in header
+        
+        Args:
+            access_token (str): access token for headers
+        """
+
+        self.headers["Authorization"] = f"Bearer {access_token}"
+
     def refresh_session(self) -> None:
         """Refresh session for work with WakaTime API
 
@@ -151,6 +160,27 @@ class WakatimeAPI:
         """
         return dict(parse_qsl(self.session.access_token_response.text))["access_token"]
 
+    def check_access_token(self, access_token: str) -> bool:
+        """Check access token
+
+        https://wakatime.com/developers
+
+        Args:
+            access_token (str): Access token
+
+        Returns:
+            bool: True if access token is valid, else False
+        """
+
+        self.set_access_token(access_token)
+        
+        response = get(f"{self.base_url}users/current/stats", headers=self.headers)
+
+        if response.status_code == 200:
+            return True
+        else: 
+            return False
+
     def check_refresh_token(self, refresh_token) -> bool:
         """Check refresh token
 
@@ -187,9 +217,8 @@ class WakatimeStats(WakatimeAPI):
         get_editors_stats: Get statistics by editors
         get_categories_stats: Get statistics by categories
     """
-
-    def __init__(self, client_id, client_secret) -> None:
-        super(WakatimeStats, self).__init__(client_id, client_secret)
+    def __init__(self, access_token: str) -> None:
+        self.set_access_token(access_token)
 
     def get_stats(self) -> dict:
         """Get statistics
@@ -202,27 +231,9 @@ class WakatimeStats(WakatimeAPI):
         Raises:
             KeyError: If session is None
         """
-        return self.session.get("users/current/stats").json()
+        return get(f"{self.base_url}users/current/stats", headers=self.headers).json()
 
-    @staticmethod
-    def new_refresh_session(refresh):
-        """Decorator for refresh session
-
-        Args:
-            refresh (func): Function for refresh session
-
-        Returns:
-            func: Wrapper for refresh session
-        """
-
-        def wrapper(self, refresh_token):
-            self._new_refresh_session(refresh_token)
-            return refresh(self, refresh_token)
-
-        return wrapper
-
-    @new_refresh_session
-    async def get_lang_stats(self, refresh_token):
+    async def get_lang_stats(self):
         """Get statistics by languages
 
         https://wakatime.com/developers#stats
@@ -233,11 +244,10 @@ class WakatimeStats(WakatimeAPI):
         Returns:
             dict: Statistics by languages
         """
-
+        
         return self.get_stats()["data"]["languages"]
 
-    @new_refresh_session
-    async def get_all_time(self, refresh_token):
+    async def get_all_time(self):
         """Get all time
 
         https://wakatime.com/developers#stats
@@ -250,8 +260,7 @@ class WakatimeStats(WakatimeAPI):
         """
         return self.get_stats()["data"]["human_readable_total_including_other_language"]
 
-    @new_refresh_session
-    async def get_os_stats(self, refresh_token):
+    async def get_os_stats(self):
         """Get statistics by operating systems
 
         https://wakatime.com/developers#stats
@@ -264,8 +273,7 @@ class WakatimeStats(WakatimeAPI):
         """
         return self.get_stats()["data"]["operating_systems"]
 
-    @new_refresh_session
-    async def get_editors_stats(self, refresh_token):
+    async def get_editors_stats(self):
         """Get statistics by editors
 
         https://wakatime.com/developers#stats
@@ -278,8 +286,7 @@ class WakatimeStats(WakatimeAPI):
         """
         return self.get_stats()["data"]["editors"]
 
-    @new_refresh_session
-    async def get_categories_stats(self, refresh_token):
+    async def get_categories_stats(self):
         """Get statistics by categories
 
         https://wakatime.com/developers#stats

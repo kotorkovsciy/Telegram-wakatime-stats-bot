@@ -24,16 +24,16 @@ class Database:
         self.__coll_user = self.__db_user["users"]
         self.__coll_stats = self.__db_user["stats"]
 
-    async def user_add(self, user_id: int, refresh_token: str) -> None:
+    async def user_add(self, user_id: int, refresh_token: str, access_token: str) -> None:
         """Create user
 
         Args:
             user_id (int): User id
             refresh_token (str): Refresh token
         """
-        self.__coll_user.insert_one({"_id": user_id, "refresh_token": refresh_token})
+        self.__coll_user.insert_one({"_id": user_id, "refresh_token": refresh_token, "access_token": access_token })
 
-    async def user_update(self, user_id: int, refresh_token: str) -> None:
+    async def user_update(self, user_id: int, refresh_token: str, access_token: str) -> None:
         """Update user
 
         Args:
@@ -41,7 +41,7 @@ class Database:
             refresh_token (str): Refresh token
         """
         self.__coll_user.update_one(
-            {"_id": user_id}, {"$set": {"refresh_token": refresh_token}}
+            {"_id": user_id}, {"$set": {"refresh_token": refresh_token, "access_token": access_token }}
         )
 
     async def user_exsist(self, user_id: int) -> bool:
