@@ -19,3 +19,4 @@ json/
 *.exe
 *.log
 .idea/
+celerybeat-schedule

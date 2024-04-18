@@ -7,7 +7,6 @@ from os.path import exists
 from os import mkdir
 from logging import basicConfig, INFO
 from datetime import datetime as dt
-from scripts.notify import scheduled
 
 
 async def on_startup(_):
@@ -26,7 +25,4 @@ stats.register_handlers_stats(dp)
 
 
 if __name__ == "__main__":
-    loop = new_event_loop()
-    set_event_loop(loop)
-    loop.create_task(scheduled(86400))
     start_polling(dp, skip_updates=True, on_startup=on_startup)

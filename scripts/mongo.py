@@ -1,6 +1,6 @@
 import pymongo
 from pymongo import DESCENDING
-
+from os import getenv
 
 class Database:
     __instance = None
@@ -20,7 +20,7 @@ class Database:
             connstring (str): Connection string
         """
         self.__connection = pymongo.MongoClient(connstring)
-        self.__db_user = self.__connection["test"]
+        self.__db_user = self.__connection[getenv("DB_NAME")]
         self.__coll_user = self.__db_user["users"]
         self.__coll_stats = self.__db_user["stats"]
 

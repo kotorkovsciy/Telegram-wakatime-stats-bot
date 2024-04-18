@@ -5,9 +5,33 @@ services:
   build:
    context: .
   environment:
-   - CONNECTIONSTRING=mongodb://mongo:27017/bot
+   - CONNECTIONSTRING=${CONNECTIONSTRING:-mongodb://mongo:27017/bot}
+   - DB_NAME=${DB_NAME:-wakatime_stats}
   volumes:
    - ./:/usr/src/bot/
+  depends_on:
+   - mongo
+
+ worker:
+  build:
+    context: .
+  command: celery -A tasks worker -B --loglevel=info --logfile=logs/celery.log -E
+  environment:
+    - CONNECTIONSTRING=${CONNECTIONSTRING:-mongodb://mongo:27017/bot}
+    - DB_NAME=${DB_NAME:-wakatime_stats}
+    - RABBITMQ_URI=${RABBITMQ_URI:-amqp://rabbitmq:5672}
+    - C_FORCE_ROOT=true
+  volumes:
+   - ./:/usr/src/bot/
+  depends_on:
+    - rabbitmq
+    - mongo
+
+ rabbitmq:
+  image: rabbitmq:3-management
+  ports:
+    - 5672:5672
+    - 15672:15672
 
  mongo:
   image: mongo:4.2.8
@@ -15,5 +39,6 @@ services:
    - 27017:27017
   volumes:
    - mongodb:/data/db
+
 volumes:
  mongodb:
